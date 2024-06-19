@@ -1,17 +1,34 @@
-# Repository of a plugin for BigBlueButton
+# Code Highlighter Plugin
 
-## Description
+## What is it?
 
-A brief description of the plugin including a screenshot or a short video.
+The Code Highlighter Plugin serves as a chat tool for studenteds and users to demonstrate and compreehend code blocks in simpler, more visual ways.
 
-## Running the Plugin From Source Code
+![Gif of plugin demo](./public/assets/plugin.gif)
 
-## Building the Plugin
+## Obtaining plugin from CDN
 
+1. Add reference to it on BigBlueButton's `settings.yml`:
 
-## Background
+```yaml
+  plugins:
+    - name: CodeHighlighter
+      url: https://bigbluebutton.nyc3.digitaloceanspaces.com/plugins/bbb30/CodeHighlighter.js
+```
 
-BigBlueButton added supports for plugins in 2024 with BBB 3.0.
-Check the official [documentation website](https://docs.bigbluebutton.org) for more information.
+## Running the Plugin from Source
 
-This plugin repository was created using the plugin [template repository for BigBlueButton](https://github.com/bigbluebutton/plugin-template) hosted on GitHub.
+1. Start the development server:
+
+```bash
+npm install
+npm start
+```
+
+2. Add reference to it on BigBlueButton's `settings.yml`:
+
+```yaml
+  plugins:
+    - name: CodeHighlighter
+      url: http://127.0.0.1:4701/static/CodeHighlighter.js
+```
