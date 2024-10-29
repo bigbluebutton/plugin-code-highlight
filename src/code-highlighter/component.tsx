@@ -24,11 +24,11 @@ function CodeHighlighter({ pluginUuid: uuid }: CodeHighlighterProps): React.Reac
     setChatIdsToApplyHighlights,
   ] = useState<MessageIdAndCodeLanguage[]>([]);
   const alreadyHighlightedMessages = React.useRef<string[]>([]);
-  const response = pluginApi.useLoadedChatMessages();
+  const responseLoadedChatMessage = pluginApi.useLoadedChatMessages();
 
   useEffect(() => {
-    if (response.data) {
-      const messagesToHighlight = response.data.filter(
+    if (responseLoadedChatMessage.data) {
+      const messagesToHighlight = responseLoadedChatMessage.data.filter(
         (message) => message.message.search(CODE_BLOCK_REGEX) !== -1
             && !alreadyHighlightedMessages.current.includes(message.messageId),
       ).map((message) => {
@@ -46,7 +46,7 @@ function CodeHighlighter({ pluginUuid: uuid }: CodeHighlighterProps): React.Reac
       });
       setChatIdsToApplyHighlights(messagesToHighlight);
     }
-  }, [response]);
+  }, [responseLoadedChatMessage]);
 
   useEffect(() => {
     alreadyHighlightedMessages.current = alreadyHighlightedMessages.current
@@ -78,7 +78,7 @@ function CodeHighlighter({ pluginUuid: uuid }: CodeHighlighterProps): React.Reac
       });
       return true;
     });
-  }, [response]);
+  }, [chatMessagesToApplyHighlights, chatMessagesDomElements]);
   return null;
 }
 
