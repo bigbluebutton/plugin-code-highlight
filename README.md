@@ -6,29 +6,29 @@ The Code Highlighter Plugin serves as a chat tool for studenteds and users to de
 
 ![Gif of plugin demo](./public/assets/plugin.gif)
 
-## Obtaining plugin from CDN
+## Building the Plugin
 
-1. Add reference to it on BigBlueButton's `settings.yml`:
-
-```yaml
-  plugins:
-    - name: CodeHighlighter
-      url: https://bigbluebutton.nyc3.digitaloceanspaces.com/plugins/bbb30/CodeHighlighter.js
-```
-
-## Running the Plugin from Source
-
-1. Start the development server:
+To build the plugin for production use, follow these steps:
 
 ```bash
-npm install
-npm start
+cd $HOME/src/plugin-code-highlight
+npm ci
+npm run build-bundle
 ```
 
-2. Add reference to it on BigBlueButton's `settings.yml`:
+The above command will generate the `dist` folder, containing the bundled JavaScript file named `CodeHighlighter.js`. This file can be hosted on any HTTPS server along with its `manifest.json`.
 
-```yaml
-  plugins:
-    - name: CodeHighlighter
-      url: http://127.0.0.1:4701/static/CodeHighlighter.js
+If you install the Plugin separated to the manifest, remember to change the `javascriptEntrypointUrl` in the `manifest.json` to the correct endpoint.
+
+To use the plugin in BigBlueButton, send this parameter along in create call:
+
 ```
+pluginManifests=[{"url":"<your-domain>/path/to/manifest.json"}]
+```
+
+Or additionally, you can add this same configuration in the `.properties` file from `bbb-web` in `/usr/share/bbb-web/WEB-INF/classes/bigbluebutton.properties`
+
+
+## Development mode
+
+As for development mode (running this plugin from source), please, refer back to https://github.com/bigbluebutton/bigbluebutton-html-plugin-sdk section `Running the Plugin from Source`
