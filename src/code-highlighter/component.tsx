@@ -23,14 +23,12 @@ function CodeHighlighter({ pluginUuid: uuid }: CodeHighlighterProps): React.Reac
     chatMessagesToApplyHighlights,
     setChatIdsToApplyHighlights,
   ] = useState<MessageIdAndCodeLanguage[]>([]);
-  const alreadyHighlightedMessages = React.useRef<string[]>([]);
   const responseLoadedChatMessage = pluginApi.useLoadedChatMessages();
 
   useEffect(() => {
     if (responseLoadedChatMessage.data) {
       const messagesToHighlight = responseLoadedChatMessage.data.filter(
-        (message) => message.message.search(CODE_BLOCK_REGEX) !== -1
-            && !alreadyHighlightedMessages.current.includes(message.messageId),
+        (message) => message.message.search(CODE_BLOCK_REGEX) !== -1,
       ).map((message) => {
         const codeLanguageIndex = message.message.search(CODE_LANGUAGE_REGEX);
         let codeLanguage = '';
@@ -48,11 +46,6 @@ function CodeHighlighter({ pluginUuid: uuid }: CodeHighlighterProps): React.Reac
     }
   }, [responseLoadedChatMessage]);
 
-  useEffect(() => {
-    alreadyHighlightedMessages.current = alreadyHighlightedMessages.current
-      .concat(chatMessagesToApplyHighlights.map((message) => message.messageId));
-  }, [chatMessagesToApplyHighlights]);
-
   const chatMessagesDomElements = pluginApi.useChatMessageDomElements(chatMessagesToApplyHighlights
     .map((message) => message.messageId));
 
@@ -65,16 +58,18 @@ function CodeHighlighter({ pluginUuid: uuid }: CodeHighlighterProps): React.Reac
       const codeHTMLTags = chatMessageDomElement.querySelectorAll('code');
 
       codeHTMLTags.forEach((codeTagItem) => {
-        const pre = document.createElement('pre');
-        const code = document.createElement('code');
-        code.classList.add('hljs');
-        code.classList.add(messageFromGraphql.codeLanguage);
-        const pureTextCode = codeTagItem.innerText;
-        const highlightedCode = hljs
-          .highlight(messageFromGraphql.codeLanguage, pureTextCode).value;
-        code.innerHTML = highlightedCode;
-        pre.appendChild(code);
-        codeTagItem.replaceWith(pre);
+        if (!((codeTagItem.parentNode as HTMLElement).tagName === 'PRE')) {
+          const pre = document.createElement('pre');
+          const code = document.createElement('code');
+          code.classList.add('hljs');
+          code.classList.add(messageFromGraphql.codeLanguage);
+          const pureTextCode = codeTagItem.innerText;
+          const highlightedCode = hljs
+            .highlight(messageFromGraphql.codeLanguage, pureTextCode).value;
+          code.innerHTML = highlightedCode;
+          pre.appendChild(code);
+          codeTagItem.replaceWith(pre);
+        }
       });
       return true;
     });
